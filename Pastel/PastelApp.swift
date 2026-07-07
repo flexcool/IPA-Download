@@ -8342,11 +8342,12 @@ extension View {
     }
 
     func safeAreaBar<V: View>(edge: Edge, spacing: CGFloat, @ViewBuilder content: () -> V) -> some View {
-        switch edge {
-        case .top: safeAreaInset(edge: .top, spacing: spacing, content: content)
-        case .bottom: safeAreaInset(edge: .bottom, spacing: spacing, content: content)
-        case .leading: safeAreaInset(edge: .leading, spacing: spacing, content: content)
-        case .trailing: safeAreaInset(edge: .trailing, spacing: spacing, content: content)
+        if edge == .top || edge == .bottom {
+            let ve: VerticalEdge = edge == .top ? .top : .bottom
+            return AnyView(safeAreaInset(edge: ve, spacing: spacing, content: content))
+        } else {
+            let he: HorizontalEdge = edge == .leading ? .leading : .trailing
+            return AnyView(safeAreaInset(edge: he, spacing: spacing, content: content))
         }
     }
 
