@@ -8293,6 +8293,18 @@ struct PastelApp: App {
 
 // MARK: - macOS 26+ Compatibility Shims
 
+struct ScrollEdgeEffectStyle {
+    static let soft = ScrollEdgeEffectStyle()
+}
+
+struct GlassEffectTransitionStyle {
+    static let matchedGeometry = GlassEffectTransitionStyle()
+}
+
+struct SharedBackgroundVisibility {
+    static let hidden = SharedBackgroundVisibility()
+}
+
 struct GlassStyle {
     var tint: Color?
     var isInteractive: Bool = false
@@ -8325,19 +8337,26 @@ extension View {
         matchedGeometryEffect(id: id, in: namespace)
     }
 
-    func glassEffectTransition(_ transition: Any?) -> some View {
+    func glassEffectTransition(_ transition: GlassEffectTransitionStyle) -> some View {
         self
     }
 
     func safeAreaBar<V: View>(edge: Edge, spacing: CGFloat, @ViewBuilder content: () -> V) -> some View {
-        safeAreaInset(edge: edge, alignment: .center, spacing: spacing, content: content)
+        switch edge {
+        case .top: safeAreaInset(edge: .top, spacing: spacing, content: content)
+        case .bottom: safeAreaInset(edge: .bottom, spacing: spacing, content: content)
+        case .leading: safeAreaInset(edge: .leading, spacing: spacing, content: content)
+        case .trailing: safeAreaInset(edge: .trailing, spacing: spacing, content: content)
+        }
     }
 
-    func scrollEdgeEffectStyle(_ style: Any?, for edge: Edge) -> some View {
+    func scrollEdgeEffectStyle(_ style: ScrollEdgeEffectStyle, for edge: Edge) -> some View {
         self
     }
+}
 
-    func sharedBackgroundVisibility(_ visibility: Any?) -> some View {
+extension ToolbarContent {
+    func sharedBackgroundVisibility(_ visibility: SharedBackgroundVisibility) -> some ToolbarContent {
         self
     }
 }
@@ -8370,7 +8389,7 @@ struct GlassButtonStyle: ButtonStyle {
             )
             .overlay(
                 Capsule()
-                    .stroke(prominent ? Color.accentColor : Color.separator.opacity(0.2), lineWidth: 1)
+                    .stroke(prominent ? Color.accentColor : Color(nsColor: .separatorColor).opacity(0.5), lineWidth: 1)
             )
             .foregroundStyle(prominent ? .white : .primary)
             .scaleEffect(configuration.isPressed ? 0.97 : 1)
