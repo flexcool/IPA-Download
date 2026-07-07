@@ -14,9 +14,9 @@ node/bin/node             ← bundled arm64 Node binary (copied into .app by bui
 ## Build & run
 
 1. `cd NodeProject && npm install`
-2. Open `Pastel.xcodeproj` in Xcode, build & run (arm64 only)
+2. Open `Pastel.xcodeproj` in Xcode, build & run (arm64 only; macOS 26+ APIs shimmed in `PastelApp.swift` compat section)
 
-CI: `.github/workflows/build.yml` builds on `macos-15`. Override `MACOSX_DEPLOYMENT_TARGET=15.0` since the code uses macOS 26+ SwiftUI APIs (`glassEffect`, `GlassEffectContainer`, `safeAreaBar`, etc.) shimmed at the bottom of `PastelApp.swift`.
+CI: `.github/workflows/build.yml` builds on `macos-15`.
 
 No tests, no lint, no typecheck — no verification commands exist.
 
